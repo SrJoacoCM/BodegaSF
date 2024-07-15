@@ -47,3 +47,19 @@ def detalle_cliente(request, cliente_id):
         'pedidos': pedidos
     }
     return render(request, 'app/detalle.html', context)
+
+def lista_repartidores(request):
+    repartidores = Repartidor.objects.all()
+    context = {
+        'repartidores': repartidores
+    }
+    return render(request, 'app/lista_repartidores.html', context)
+
+def pedidos_repartidor(request, repartidor_id):
+    repartidor = get_object_or_404(Repartidor, id=repartidor_id)
+    pedidos = Pedido.objects.filter(repartidor_pedido=repartidor)
+    context = {
+        'repartidor': repartidor,
+        'pedidos': pedidos
+    }
+    return render(request, 'app/pedidos_repartidor.html', context)
