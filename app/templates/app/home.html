@@ -16,7 +16,7 @@
             <script>
                 Swal.fire({
                     "title": "Estado Modificado",
-                    "text": "Correo premitido",
+                    "text": "{{ message }}",
                     "icon": "success"
                 })
             </script>
@@ -43,7 +43,7 @@
                     <td>{{ pedido.nombre_pedido.nombre }}</td>
                     <td>{{ pedido.repartidor_pedido.nombre }}</td>
                     <td>
-                        <form method="POST" action="{% url 'actualizar_estado_pedido' pedido.id %}">
+                        <form method="POST" action="{% url 'actualizar_estado_pedido' pedido.id %}" class="form-actualizar-estado">
                             {% csrf_token %}
                             <select name="nuevo_estado" class="form-control me-3">
                                 {% for estado in estados %}
@@ -56,7 +56,8 @@
                     <td>
                         <button type="submit" class="btn btn-outline-primary">Actualizar</button>
                         <a href="{% url 'detalle_cliente' pedido.nombre_pedido.id %}" class="btn btn-outline-primary">Ver Detalle</a>
-                    </form></td>
+                    </form>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -65,19 +66,27 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    {% if messages %}
-        {% for message in messages %}
-            <script>
-                Swal.fire({
-                    "title": "Felicitaciones",
-                    "text": "{{ message }}",
-                    "icon": "success",
-                })
-            </script>
-        {% endfor %}
-    {% endif %}
-
-    {% block js %}
-    {% endblock %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const forms = document.querySelectorAll('.form-actualizar-estado');
+            forms.forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    event.preventDefault();
+                    Swal.fire({
+                        title: '¿Estás seguro?',
+                        text: '¿Deseas actualizar el estado de este pedido?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Sí, actualizar',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 </body>
 </html>
